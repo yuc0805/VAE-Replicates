@@ -24,5 +24,5 @@ class Celeba(Dataset):
 
         return image
 
-
+    
 

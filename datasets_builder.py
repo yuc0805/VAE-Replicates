@@ -9,9 +9,12 @@ from timm.data.constants import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
 
 def build_dataset(is_train, args):
     transform = build_transform(is_train, args)
+    if is_train:
+        dataset = Celeba(main_dir=args.data_path,transform = transform)
 
-    root = os.path.join(args.data_path, 'train' if is_train else 'val')
-    dataset = datasets.ImageFolder(root, transform=transform)
+    else:
+        root = args.data_path
+        dataset = datasets.ImageFolder(root, transform=transform)
 
     print(dataset)
 
@@ -32,17 +35,13 @@ def build_transform(is_train,args):
     
     # eval transform
     else:
-        t = []
-        if args.input_size <= 224:
-            crop_pct = 224 / 256
-        else:
-            crop_pct = 1.0
+        size = int(crop_pct = 64 / max(args.input_dims, 64))
 
-        size = int(args.input_size/crop_pct)    
+        t = []
         t.append(
             transforms.Resize(size, interpolation=PIL.Image.BICUBIC)
         )
-        t.append(transforms.CenterCrop(args.input_size))
+        t.append(transforms.CenterCrop(args.input_dims))
         t.append(transforms.ToTensor())
         t.append(transforms.Normalize(mean, std))
         

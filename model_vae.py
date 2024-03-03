@@ -4,7 +4,7 @@ import torch.nn.functional as F
 
 
 class VAE(nn.Module):
-    def __init__(self,input_dims: int,
+    def __init__(self,in_channels: int,
                  latent_dims: int,
                  hidden_dims: list=None,
                  *args):
@@ -25,7 +25,7 @@ class VAE(nn.Module):
             for h_dim in hidden_dims:
                 modules.append(
                     nn.Sequential(
-                        nn.Conv2d(in_channels=input_dims,out_channels=h_dim,
+                        nn.Conv2d(in_channels=in_channels,out_channels=h_dim,
                                 kernel_size=3,stride=2,padding=1),
                         nn.BatchNorm2d(h_dim),
                         nn.LeakyReLU
@@ -105,7 +105,7 @@ class VAE(nn.Module):
     def forward(self,x):
         mu, logvar = self.forward_encoder(x)
         z = self.reparameterize(mu,logvar)
-        x = self.forward_decoder(z)
+        x = [self.forward_decoder(z), mu, logvar]
 
     def sample(self,num_sample,device):
         z = torch.radn(num_sample,self.latent_dims)

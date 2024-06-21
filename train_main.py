@@ -79,7 +79,7 @@ def main(args):
     model = model_vae.VAE(in_channels = args.in_channels,
                           latent_dims = args.latent_dims,
                           hidden_dims = args.hidden_dims,*args)
-    model.to(device)
+    model.to(device)   
 
     if args.is_train:
         # training
